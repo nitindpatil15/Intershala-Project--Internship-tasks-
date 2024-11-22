@@ -13,12 +13,19 @@ export const userSlice = createSlice({
       state.user = null;
     },
     updateUserPhoto: (state, action) => {
-        if (state.user) {
-          state.user.photo = action.payload;
-        }
-      },
+      if (state.user) {
+        state.user.photo = action.payload;
+      }
+    },
+    updateNotificationSettings: (state, action) => {
+      if (state.user) {
+        state.user.notificationsEnabled = action.payload;
+      }
+    },
   },
 });
-export const { login, logout,updateUserPhoto } = userSlice.actions;
+
+export const { login, logout, updateUserPhoto, updateNotificationSettings } =
+  userSlice.actions;
 export const selectUser = (state) => state.user.user;
 export default userSlice.reducer;

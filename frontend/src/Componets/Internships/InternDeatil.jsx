@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import Intern from "../Data/InternshipDatAvl";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../Feature/Userslice";
+
 import "./deatil.css";
 import axios from "axios";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 
-function InternDeatil() {
-  const user = useSelector(selectUser);
+function InternDeatil({userId}) {
+  const[user,setUser]=useState(null)
   const [isDivVisible, setDivVisible] = useState(false);
   const [textare, setTextare] = useState("");
   const [company, setCompany] = useState("");
@@ -25,6 +24,13 @@ function InternDeatil() {
   const [data, setData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
+      const userDocRef = doc(getFirestore(), "users", userId);
+        const userSnapshot = await getDoc(userDocRef);
+        if (userSnapshot.exists()) {
+          setUser(userSnapshot.data());
+        } else {
+          console.error("User not found.");
+        }
       const response = await axios.get(
         `http://localhost:5000/api/internship/${id}`
       );
@@ -175,6 +181,7 @@ function InternDeatil() {
             <div className="moreSteps">
               <p className="font-semibold text-xl">Your resume</p>
               <small>
+                <embed src={user?.pdfUrl} type="" />
                 your current resume will be submitted along with the application
               </small>
 

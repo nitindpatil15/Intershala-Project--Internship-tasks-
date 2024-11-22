@@ -25,6 +25,7 @@ const Register = () => {
         firstName: user.displayName?.split(" ")[0] || "",
         lastName: user.displayName?.split(" ")[1] || "",
         email: user.email,
+        status:"free",
         uid: user.uid,
         photo: user.photoURL || "",
       });
@@ -50,6 +51,7 @@ const Register = () => {
         firstName: fname,
         lastName: lname,
         email: user.email,
+        status:"free",
         uid: user.uid,
       });
 

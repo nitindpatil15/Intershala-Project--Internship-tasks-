@@ -1,15 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../Assets/logo.png";
 import { Link } from "react-router-dom";
-import "./navbar.css";
-import Sidebar from "./Sidebar";
 import { signInWithPopup, signOut } from "firebase/auth";
 import { auth, provider } from "../../firebase/firebase";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../Feature/Userslice";
 import { useNavigate } from "react-router-dom";
 import { doc, setDoc } from "firebase/firestore";
-import { db } from "../../firebase/firebase"; // Ensure Firestore is properly initialized
+import { db } from "../../firebase/firebase";
+import { collection, query, onSnapshot } from "firebase/firestore"; // Import Firestore
 
 function Navbar() {
   const navigate = useNavigate();
@@ -18,29 +17,64 @@ function Navbar() {
   const [isDivVisibleForJob, setDivVisibleFroJob] = useState(false);
   const [isDivVisibleForlogin, setDivVisibleFrologin] = useState(false);
   const [isDivVisibleForProfile, setDivVisibleProfile] = useState(false);
-  const [isStudent, setStudent] = useState(true);
+  const [notifications, setNotifications] = useState([]);
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const userId = auth.currentUser?.uid; // Access the current user ID safely
+
+  useEffect(() => {
+    if (userId) {
+      const notificationsRef = collection(db, "users", userId, "notifications");
+      const q = query(notificationsRef);
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const newNotifications = [];
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === "added") {
+            newNotifications.push(change.doc.data());
+            showBrowserNotification(
+              change.doc.data().message,
+              change.doc.data().status
+            );
+          }
+        });
+        setNotifications(newNotifications);
+      });
+
+      return () => unsubscribe(); // Cleanup listener when component unmounts
+    }
+  }, [userId, db]);
+
+  const showBrowserNotification = (message, status) => {
+    if (Notification.permission === "granted") {
+      const options = {
+        body: message,
+        backgroundColor: status === "accepted" ? "green" : "red", // Example styling
+      };
+
+      new Notification("Application Status Update", options);
+    }
+  };
 
   const loginFunction = () => {
     signInWithPopup(auth, provider)
-      .then((res) => {
-        // Store user information in Firestore
+      .then(async (res) => {
         const userRef = doc(db, "users", res.user.uid);
-        setDoc(userRef, {
-          uid: res.user.uid,
-          displayName: res.user.displayName,
-          email: res.user.email,
-          photo: res.user.photoURL,
-          providerId: res.user.providerData[0]?.providerId,
-        })
-          .then(() => {
-            console.log("User stored in Firestore");
-          })
-          .catch((error) => {
-            console.error("Error storing user in Firestore: ", error);
-          });
+        const userSnapshot = await userRef.get();
+        console.log(userSnapshot.exists());
+
+        if (userSnapshot.exists()) {
+          console.log("User document found in Firestore.");
+          navigate("/");
+        } else {
+          console.error("User document not found in Firestore. Login failed.");
+          alert(
+            "Your account is not registered. Please contact the administrator."
+          );
+          signOut(auth); // Log the user out if no document exists
+        }
       })
       .catch((err) => {
-        console.log(err);
+        console.error("Error during sign-in:", err);
       });
     setDivVisibleFrologin(false);
   };
@@ -50,17 +84,6 @@ function Navbar() {
   };
   const closeLogin = () => {
     setDivVisibleFrologin(false);
-  };
-  const setTrueForStudent = () => {
-    setStudent(false);
-  };
-  const setFalseForStudent = () => {
-    setStudent(true);
-  };
-
-  //  for showing profile dropdown
-  const showtheProfile = () => {
-    setDivVisibleProfile(true);
   };
 
   const showInternShips = () => {
@@ -87,196 +110,166 @@ function Navbar() {
 
   return (
     <div>
-      <nav className="nav1">
-        <ul>
-          <div className="img">
-            <Link to={"/"}>
-              <img src={logo} alt="" srcSet="" />
+      <nav className="bg-white p-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          {/* Logo */}
+          <div>
+            <Link to="/">
+              <img src={logo} alt="Logo" className="h-16" />
             </Link>
           </div>
-          <div className="elem">
-            <Link to={"/Internship"}>
-              <p id="int" className="" onMouseEnter={showInternShips}>
-                {" "}
-                Internships{" "}
-                <i
-                  onClick={hideInternShips}
-                  id="ico"
-                  className="bi bi-caret-down-fill"
-                ></i>
+
+          {/* Navbar links for large screens */}
+          <div className="hidden md:flex space-x-6">
+            <Link to="/Internship" className="text-black">
+              <p onMouseEnter={showInternShips}>
+                Internships <i id="ico" className="bi bi-caret-down-fill"></i>
               </p>
             </Link>
-            <Link to={"/Jobs"}>
+            <Link to="/Jobs" className="text-black">
               <p onMouseEnter={showJobs}>
-                Jobs{" "}
-                <i
-                  className="bi bi-caret-down-fill"
-                  id="ico2"
-                  onClick={hideJobs}
-                ></i>
+                Jobs <i id="ico2" className="bi bi-caret-down-fill"></i>
               </p>
             </Link>
           </div>
-          <div className="search">
-            <i className="bi bi-search"></i>
-            <input type="text" placeholder="Search" />
+
+          {/* Search Bar */}
+          <div className="flex items-center space-x-2">
+            <i className="bi bi-search text-gray-600"></i>
+            <input
+              type="text"
+              placeholder="Search"
+              className="border px-2 py-1 rounded-md focus:outline-none"
+            />
           </div>
-          <div className="flex items-center">
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden flex items-center">
+            <button
+              onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-black"
+            >
+              <i
+                className={`bi ${
+                  isMobileMenuOpen ? "bi-x" : "bi-list"
+                } text-2xl`}
+              ></i>
+            </button>
+          </div>
+
+          {/* Authentication Section for large screens */}
+          <div className="hidden md:flex items-center space-x-4">
             {user ? (
-              <>
-                <div className="Profile mx-14">
-                  <Link to={"/profile"}>
-                    <img
-                      src={user?.photo}
-                      alt=""
-                      onMouseEnter={showtheProfile}
-                      className="rounded-full w-12 ml-3"
-                      id="picpro"
-                    />
-                  </Link>
-                </div>
-              </>
+              <div className="flex items-center space-x-2">
+                <Link to="/profile">
+                  <img
+                    src={user?.photo}
+                    alt="User Profile"
+                    onMouseEnter={() => setDivVisibleProfile(true)}
+                    className="h-12 w-12 rounded-full mx-2"
+                  />
+                </Link>
+                <Link
+                  to="/resume"
+                  className="text-black border-2 p-2 rounded-xl"
+                >
+                  Build Resume
+                </Link>
+              </div>
             ) : (
-              <>
-                <div className="auth">
-                  <button className="btn1" onClick={showLogin}>
+              <div className="flex space-x-4">
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                  onClick={showLogin}
+                >
+                  Login
+                </button>
+                <button className="border border-blue-500 text-blue-500 px-4 py-2 rounded-md">
+                  <Link to="/register">Register</Link>
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* User Actions for small screens */}
+          {user && (
+            <div className="hidden md:flex items-center space-x-4">
+              <button
+                className="bg-red-500 text-white px-4 py-2 rounded-md"
+                onClick={logoutFunction}
+              >
+                Logout
+              </button>
+              <Link to="/notifications" className="text-black">
+                Alert{" "}
+                {notifications.length > 0 && (
+                  <span className="bg-red-500 text-white px-2 py-1 rounded-full text-xs">
+                    {notifications.length}
+                  </span>
+                )}
+              </Link>
+            </div>
+          )}
+        </div>
+
+        {/* Mobile Menu Items */}
+        {isMobileMenuOpen && (
+          <div className="flex flex-col items-center space-y-4 md:hidden bg-white p-4">
+            <Link to="/Internship" className="text-black">
+              Internships
+            </Link>
+            <Link to="/Jobs" className="text-black">
+              Jobs
+            </Link>
+            <div className="flex flex-col items-center space-y-2">
+              {!user ? (
+                <div className="flex space-x-4">
+                  <button
+                    className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                    onClick={showLogin}
+                  >
                     Login
                   </button>
-
-                  <button className="btn2">
+                  <button className="border border-blue-500 text-blue-500 px-4 py-2 rounded-md">
                     <Link to="/register">Register</Link>
                   </button>
                 </div>
-              </>
-            )}
-          </div>
-          {user ? (
-            <div className="items-center">
-              <button className="bt-log mx-4" id="bt" onClick={logoutFunction}>
-                Logout 
-              </button>
-              <Link to="/notifications" className="bg-gray-400 p-2 rounded-lg">Alert</Link>
+              ) : (
+                <div className="flex flex-col items-center space-y-2">
+                  <button
+                    className="bg-red-500 text-white px-4 py-2 rounded-md"
+                    onClick={logoutFunction}
+                  >
+                    Logout
+                  </button>
+                  <Link to="/profile" className="text-black">
+                    Profile
+                  </Link>
+                </div>
+              )}
             </div>
-          ) : (
-            <>
-              <div className="flex mt-7 hire">Hire Talent</div>
-
-              <div className="admin">
-                <Link to={"/adminLogin"}>
-                  <button>Admin</button>{" "}
-                </Link>
-              </div>
-            </>
-          )}
-        </ul>
+          </div>
+        )}
       </nav>
 
+      {/* Dropdowns for Internships and Jobs */}
       {isDivVisibleForintern && (
-        <div className="profile-dropdown-2">
-          <div className="left-section">
-            <p>Top Locations</p>
-            <p>Profile</p>
-            <p>Top Category</p>
-            <p>Explore More Internships</p>
-          </div>
-          <div className="line flex bg-slate-400"></div>
-          <div className="right-section">
-            <p>Intern at India</p>
-            <p>Intern at India</p>
-            <p>Intern at India</p>
-            <p>Intern at India</p>
-            <p>Intern at India</p>
-          </div>
+        <div className="absolute top-20 left-[15rem] bg-white shadow-lg p-4">
+          <p onMouseLeave={hideInternShips}>
+            Internships
+            <i id="ico" className="bi bi-caret-up-fill"></i>
+          </p>
         </div>
       )}
+
       {isDivVisibleForJob && (
-        <div className="profile-dropdown-1">
-          <div className="left-section">
-            <p>Top Locations</p>
-            <p>Profile</p>
-            <p>Top Category</p>
-            <p>Explore More Internships</p>
-          </div>
-          <div className="line flex bg-slate-400"></div>
-          <div className="right-section">
-            <p>Intern at India</p>
-            <p>Intern at India</p>
-            <p>Intern at India</p>
-            <p>Intern at India</p>
-            <p>Intern at India</p>
-          </div>
+        <div className="absolute top-20 left-[22rem] bg-white shadow-lg p-4">
+          <p onMouseLeave={hideJobs}>
+            Jobs
+            <i id="ico2" className="bi bi-caret-up-fill"></i>
+          </p>
         </div>
       )}
-      <div className="login">
-        {isDivVisibleForlogin && (
-          <>
-            <button id="cross" onClick={closeLogin}>
-              <i className="bi bi-x"></i>
-            </button>
-            <h5 id="state" className="mb-4 justify-center text-center">
-              <span
-                id="Sign-in"
-                style={{ cursor: "pointer" }}
-                className={`auth-tab ${isStudent ? "active" : ""}`}
-                onClick={setFalseForStudent}
-              >
-                Student
-              </span>
-              &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-              <span
-                id="join-in"
-                style={{ cursor: "pointer" }}
-                className={`auth-tab ${isStudent ? "active" : ""}`}
-                onClick={setTrueForStudent}
-              >
-                Employee andT&P
-              </span>
-            </h5>
-            {isStudent ? (
-              <>
-                <div className="py-6">
-                  <div className="flex bg-white rounded-lg justify-center overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
-                    <div className="w-full p-8 lg:w-1/2">
-                      <p
-                        onClick={loginFunction}
-                        className="flex
- items-center h-9 justify-center mt-4 text-white bg-slate-500 rounded-lg hover:bg-gray-400"
-                      >
-                        <div className="px-4 py-3 ">
-                          <span className="ml-2 mt-[-2rem] text-lg cursor-pointer">
-                            Sign in with Google
-                          </span>
-                        </div>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="py-6">
-                  <div className="flex bg-white rounded-lg justify-center overflow-hidden mx-auto max-w-sm lg:max-w-4xl">
-                    <div className="w-full p-8 lg:w-1/2">
-                      <p
-                        className="flex
-                        items-center h-9 justify-center mt-4 text-white bg-slate-100 rounded-lg hover:bg-gray-100"
-                      >
-                        {" "}
-                        <svg className="h-6 w-6" viewBox="0 0 40 40">
-                          <path d="M36.3425 16.7358H35V16.6667H20V23.3333H29.4192C28.045 27.2142 24.3525 30 20 30C14.4775 30 10 25.5225 10 20C10 14.4775 14.4775 10 20 10C22.8042 10 25.3625 11.5842 27.1092 13.7358L27.2782 13.4025L28.9742 13.3808L28.9792 13.3658L28.9742 13.3808H36.3425C37.5375 15.7892 36.3425 16.7358 35.2192 17.1092Z" />
-                        </svg>
-                        <span className="ml-2 text-lg">
-                          Sign in with Google
-                        </span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </>
-            )}
-          </>
-        )}
-      </div>
     </div>
   );
 }

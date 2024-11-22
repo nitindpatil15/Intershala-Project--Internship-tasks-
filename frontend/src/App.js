@@ -20,11 +20,23 @@ import Postinternships from "./Admin/Postinternships";
 import DeatilApplication from "./Applications/DeatilApplication";
 import UserApplicatiom from "./profile/UserApplicatiom";
 import UserapplicationDetail from "./Applications/DeatilApplicationUser";
-import Notifications from "./Componets/notification/Notifications";
+import Notify from "./Componets/notification/Notifications";
+import PopupNotifications from "./Componets/notification/PopupNotification";
+import Sidebar from "./Componets/Navbar/Sidebar";
+import RazorpayPayment from "./Prime/RazorpayPayment";
+import ResumeForm from "./Componets/resume/ResumeForm";
+
 function App() {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
   useEffect(() => {
+      if ("Notification" in window) {
+        Notification.requestPermission().then((permission) => {
+          console.log(`Notification permission: ${permission}`);
+        });
+      }
+    
+
     auth.onAuthStateChanged((authUser) => {
       if (authUser) {
         dispatch(
@@ -44,15 +56,16 @@ function App() {
   return (
     <div className="App">
       <Navbar />
-
+      <Sidebar/>
+      <PopupNotifications/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/internship" element={<Intern />} />
         <Route path="/Jobs" element={<JobAvl />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/detailjob" element={<JobDetail />} />
-        <Route path="/detailInternship" element={<InternDeatil />} />
+        <Route path="/profile" element={<Profile userId={user?.uid}/>} />
+        <Route path="/detailjob" element={<JobDetail userId={user?.uid}/>} />
+        <Route path="/detailInternship" element={<InternDeatil userId={user?.uid}/>} />
         <Route path="/detailApplication" element={<DeatilApplication />} />
         <Route path="/adminLogin" element={<AdminLogin />} />
         <Route path="/adminepanel" element={<Adminpanel />} />
@@ -63,7 +76,9 @@ function App() {
           element={<UserapplicationDetail />}
         />
         <Route path="/userapplication" element={<UserApplicatiom />} />
-        <Route path="/notifications" element={<Notifications/>} />
+        <Route path="/notifications" element={<Notify/>} />
+        <Route path="/resume" element={<RazorpayPayment userId={user?.uid}/>} />
+        <Route path="/resume-form" element={<ResumeForm userId={user?.uid} user={user}/>} />
       </Routes>
       <Footer />
     </div>

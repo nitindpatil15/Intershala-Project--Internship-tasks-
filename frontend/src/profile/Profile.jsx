@@ -1,105 +1,115 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { selectUser } from "../Feature/Userslice";
 import { Link } from "react-router-dom";
 import { db } from "../firebase/firebase";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
 import { getAuth, updateProfile } from "firebase/auth";
 
-function Profile() {
-  const user = useSelector(selectUser);
-  const [previewImage, setPreviewImage] = useState(user?.photo || "");
+function Profile({ userId }) {
+  const [user, setUser] = useState(null);
+  const [previewImage, setPreviewImage] = useState("");
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
-  console.log(user)
+
   useEffect(() => {
-    const fetchNotificationPreference = async () => {
+    const fetchUserData = async () => {
       try {
-        const userDocRef = doc(db, "users", user?.uid);
+        const userDocRef = doc(db, "users", userId);
         const userDoc = await getDoc(userDocRef);
+
         if (userDoc.exists()) {
-          setNotificationsEnabled(userDoc.data().notificationsEnabled || false);
+          const userData = userDoc.data();
+          setUser(userData);
+          setNotificationsEnabled(userData.notificationsEnabled || false);
+        } else {
+          console.error("User not found.");
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     };
 
-    fetchNotificationPreference();
-  }, [user?.uid]);
+    fetchUserData();
+  }, [userId]);
+
+  useEffect(() => {
+    if (user?.photo) {
+      setPreviewImage(user.photo);
+    }
+  }, [user]);
 
   const handleImageUpload = async (e) => {
     e.preventDefault();
-    if (window.cloudinary) {
-      const widget = window.cloudinary.createUploadWidget(
-        {
-          cloudName: "djolycs3p",
-          uploadPreset: "intershala",
-          sources: ["local", "url", "camera"],
-          showAdvancedOptions: true,
-          cropping: true,
-          multiple: false,
-          resourceType: "image",
-        },
-        async (error, result) => {
-          if (result.event === "success") {
-            const newImageUrl = result.info.secure_url;
-            setPreviewImage(newImageUrl);
-
-            try {
-              const userDocRef = doc(db, "users", user.uid);
-              await updateDoc(userDocRef, {
-                photo: newImageUrl,
-              });
-
-              const auth = getAuth();
-              if (auth.currentUser) {
-                await updateProfile(auth.currentUser, {
-                  photoURL: newImageUrl,
-                });
-                console.log("User profile updated");
-                window.location.reload();
-              }
-            } catch (error) {
-              console.error("Error updating user profile:", error);
-            }
-          } else {
-            console.error("Upload error:", error);
-          }
-        }
-      );
-      widget.open();
-    } else {
+    if (!window.cloudinary) {
       console.error("Cloudinary widget is not defined!");
+      alert(
+        "Profile picture upload feature is unavailable. Please refresh the page."
+      );
+      return;
+    }
+
+    const widget = window.cloudinary.createUploadWidget(
+      {
+        cloudName: "djolycs3p",
+        uploadPreset: "intershala",
+        sources: ["local", "url", "camera"],
+        cropping: true,
+        multiple: false,
+        resourceType: "image",
+      },
+      async (error, result) => {
+        if (result.event === "success") {
+          const newImageUrl = result.info.secure_url;
+          setPreviewImage(newImageUrl);
+
+          try {
+            const userDocRef = doc(db, "users", userId);
+            await updateDoc(userDocRef, { photo: newImageUrl });
+
+            const auth = getAuth();
+            if (auth.currentUser) {
+              await updateProfile(auth.currentUser, { photoURL: newImageUrl });
+              setUser((prevUser) => ({ ...prevUser, photo: newImageUrl }));
+              console.log("User profile updated");
+              window.location.reload()
+            }
+          } catch (error) {
+            console.error("Error updating user profile:", error);
+          }
+        } else {
+          console.error("Upload error:", error);
+        }
+      }
+    );
+    widget.open();
+  };
+
+  const handleNotificationToggle = async () => {
+    if ("Notification" in window) {
+      const permission = await Notification.requestPermission();
+      if (permission === "granted" || notificationsEnabled) {
+        setNotificationsEnabled(!notificationsEnabled);
+        saveNotificationPreference(!notificationsEnabled);
+      } else {
+        alert("Notifications permission is required to enable notifications.");
+      }
+    } else {
+      alert("Notifications are not supported in your browser.");
     }
   };
 
-  const handleToggleNotification = async () => {
-    const newStatus = !notificationsEnabled;
-    setNotificationsEnabled(newStatus);
-
+  const saveNotificationPreference = async (preference) => {
     try {
-      const userDocRef = doc(db, "users", user.uid);
-      await updateDoc(userDocRef, {
-        notificationsEnabled: newStatus,
-      });
-      console.log("Notification preference updated in Firestore");
-
-      // Optionally, sync with Firebase Authentication
-      const auth = getAuth();
-      if (auth.currentUser) {
-        await updateProfile(auth.currentUser, {
-          displayName: user.name, // If needed, update other fields too.
-        });
-      }
+      const userDocRef = doc(db, "users", userId);
+      await updateDoc(userDocRef, { notificationsEnabled: preference });
+      console.log("Notification preference updated in Firestore.");
     } catch (error) {
       console.error("Error updating notification preference:", error);
     }
   };
 
   return (
-    <div>
+    <div className="">
       <div className="flex items-center mt-9 mb-4 justify-center">
-        <div className="max-w-xs">
+        <div className="max-w-xl">
           <div className="bg-white shadow-lg rounded-lg py-3 p-8">
             <div className="photo-wrapper p-2">
               <img
@@ -110,10 +120,10 @@ function Profile() {
             </div>
             <div className="p-2">
               <h3 className="text-center text-xl text-gray-900">
-                {user?.name || "User"}
+                {user?.displayName || "User"}
               </h3>
             </div>
-            <div className="text-xs my-3">
+            <div>
               <h3 className="text-xl font-bold">UID</h3>
               <h3 className="text-center text-lg text-gray-900">
                 {user?.uid || "12345677"}
@@ -124,6 +134,16 @@ function Profile() {
               <h3 className="text-center text-xl text-gray-900">
                 {user?.email || "@gmail.com"}
               </h3>
+            </div>
+            <div className="my-2">
+              <Link
+                to={user?.pdfUrl || "#"}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xl bg-blue-400 p-2 rounded-xl items-center"
+              >
+                {user?.pdfUrl ? "View Resume" : "No Resume Available"}
+              </Link>
             </div>
 
             <div className="text-center mt-4">
@@ -139,14 +159,13 @@ function Profile() {
               <label className="inline-flex items-center">
                 <input
                   type="checkbox"
-                  className="form-checkbox text-blue-600"
                   checked={notificationsEnabled}
-                  onChange={handleToggleNotification}
+                  onChange={handleNotificationToggle}
+                  className="form-checkbox"
                 />
-                <span className="ml-2 text-gray-700">Enable Notifications</span>
+                <span className="ml-2">Enable Notifications</span>
               </label>
             </div>
-
             <div className="flex justify-center mt-3">
               <Link
                 to="/userapplication"

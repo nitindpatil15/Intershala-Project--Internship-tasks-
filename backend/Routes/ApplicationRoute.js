@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const application = require("../Model/Application");
-const Notification = require("../Model/Notification");
 const Application = require("../Model/Application");
+const admin = require("firebase-admin");
 
 router.post("/", async (req, res) => {
   const applicationData = new application({
@@ -47,12 +47,12 @@ router.get("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
   const { id } = req.params;
-  const { action, firebaseUid } = req.body; // firebaseUid should be sent from the frontend
+  const { action, firebaseUid } = req.body;
 
   if (!firebaseUid) {
     return res.status(400).json({ error: "Firebase UID is required" });
   }
-  console.log("Working");
+
   let status;
   if (action === "accepted") {
     status = "accepted";
@@ -75,17 +75,34 @@ router.put("/:id", async (req, res) => {
         .json({ error: "Not able to update the application" });
     }
 
-    // Create a notification with Firebase UID
-    const notification = new Notification({
-      userId: firebaseUid, // Store Firebase UID here
-      message: `Your application has been ${status}.`,
-      status: "unread",
-      application: updateApplication,
-      createdAt: new Date(),
-    });
-    await notification.save();
-    
-    console.log("done");
+    const message =
+      status === "accepted"
+        ? "Congratulations! You have been accepted."
+        : "Sorry, your application has been rejected.";
+
+    const notificationData = {
+      message,
+      status,
+      timestamp: new Date(),
+      read: false,
+    };
+
+    const firestore = admin.firestore();
+    const userRef = firestore.collection("users").doc(firebaseUid);
+
+    console.log(
+      "Attempting to write notification to Firestore for user:",
+      firebaseUid
+    );
+    console.log("Notification Data:", notificationData);
+
+    try {
+      await userRef.collection("notifications").add(notificationData);
+      console.log("Notification successfully added to Firestore");
+    } catch (err) {
+      console.error("Error adding notification to Firestore:", err);
+    }
+
     res.status(200).json({ success: true, data: updateApplication });
   } catch (error) {
     console.error(
@@ -97,17 +114,3 @@ router.put("/:id", async (req, res) => {
 });
 
 module.exports = router;
-
-
-
-
-// const socketId = userSockets[firebaseUid];
-    // if (socketId) {
-    //   io.to(socketId).emit("jobStatus", {
-    //     message: application.message,
-    //     color: status === "accepted" ? "green" : "blue",
-    //   });
-    //   console.log(
-    //     `Notification sent to user ${userId}: ${application.message}`
-    //   );
-    // }

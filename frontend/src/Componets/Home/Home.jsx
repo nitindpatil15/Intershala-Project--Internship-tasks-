@@ -8,6 +8,7 @@ import Job from "./Job";
 import axios from "axios";
 import { Link } from "react-router-dom";
 function Home() {
+  // eslint-disable-next-line
   const [currentSlide, setCurrentSlide] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("Big Brands");
   const [internshipData, setInternshipData] = useState([]);
