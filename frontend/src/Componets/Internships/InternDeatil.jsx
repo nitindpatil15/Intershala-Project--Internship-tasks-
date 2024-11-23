@@ -38,7 +38,7 @@ function InternDeatil({ userId }) {
 
         // Fetch internship details
         const response = await axios.get(
-          `http://localhost:5000/api/internship/${id}`
+          `https://intershal-backend.onrender.com/api/internship/${id}`
         );
 
         if (response.data) {
@@ -72,7 +72,7 @@ function InternDeatil({ userId }) {
       };
 
       await axios
-        .post("http://localhost:5000/api/application", bodyJson)
+        .post("https://intershal-backend.onrender.com/api/application", bodyJson)
         .then((res) => {})
         .catch((err) => {
           alert("error happend");

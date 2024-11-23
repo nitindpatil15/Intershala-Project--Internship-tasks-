@@ -57,7 +57,7 @@ const ResumeForm = ({ userId }) => {
       photoFormData.append("photo", photo);
 
       const photoResponse = await axios.post(
-        "http://localhost:5000/api/resume/upload-photo",
+        "https://intershal-backend.onrender.com/api/resume/upload-photo",
         photoFormData,
         {
           headers: { "Content-Type": "multipart/form-data" },
@@ -67,7 +67,7 @@ const ResumeForm = ({ userId }) => {
       const photoUrl = photoResponse.data.photoUrl;
 
       // Save resume data to the backend
-      await axios.post("http://localhost:5000/api/resume/save-resume", {
+      await axios.post("https://intershal-backend.onrender.com/api/resume/save-resume", {
         userId,
         resumeData: { ...formData, photoUrl },
       });

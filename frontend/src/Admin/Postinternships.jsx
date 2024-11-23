@@ -50,7 +50,7 @@ function Postinternships() {
       };
       axios
         .post(
-          "http://localhost:5000/api/internship",
+          "https://intershal-backend.onrender.com/api/internship",
           bodyJosn
         )
         .then((res) => {

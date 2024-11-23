@@ -90,36 +90,36 @@ function Navbar() {
 
   return (
     <div>
-      <nav className="nav1">
+      <nav className="nav1 py-1">
         <ul>
           <div className="img">
             <Link to={"/"}>
               <img src={logo} alt="Logo" />
             </Link>
           </div>
-          <div className="elem">
-            <p
+          <div className="elem flex items-center">
+            <Link to="/internship" className="mx-2"
               id="int"
               onMouseEnter={() => showDropdown(setDivVisibleForintern)}
               onMouseLeave={() => hideDropdown(setDivVisibleForintern)}
             >
               Internships <i id="ico" className="bi bi-caret-down-fill"></i>
-            </p>
-            <p
+            </Link>
+            <Link to="/Jobs"
               onMouseEnter={() => showDropdown(setDivVisibleForJob)}
               onMouseLeave={() => hideDropdown(setDivVisibleForJob)}
             >
               Jobs <i id="ico2" className="bi bi-caret-down-fill"></i>
-            </p>
+            </Link>
           </div>
-          <div className="search">
+          <div className="search ml-20">
             <i className="bi bi-search"></i>
             <input type="text" placeholder="Search" />
           </div>
           <div className="flex items-center">
             {user ? (
-              <>
-                <div className="Profile mx-20">
+              <div className="flex items-center">
+                <div className="Profile mx-20 flex items-center">
                   <Link to={"/profile"}>
                     <img
                       src={user?.photo}
@@ -129,10 +129,10 @@ function Navbar() {
                       id="picpro"
                     />
                   </Link>
-                  <Link to={"/resume"}>Resume</Link>
+                  <Link to={"/resume"} className="bg-black text-white p-2 rounded-xl">Resume</Link>
                 </div>
                 <button
-                  className="bt-log mx-4"
+                  className="bt-log mx-5"
                   id="bt"
                   onClick={logoutFunction}
                 >
@@ -149,7 +149,7 @@ function Navbar() {
                     </span>
                   )}
                 </Link>
-              </>
+              </div>
             ) : (
               <div className="flex items-center">
                 <div className="auth">

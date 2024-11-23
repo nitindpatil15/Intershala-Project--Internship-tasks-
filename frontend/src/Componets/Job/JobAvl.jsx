@@ -13,7 +13,7 @@ function JobAvl() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/job`
+          `https://intershal-backend.onrender.com/api/job`
         );
         setJobData(response.data);
       } catch (error) {
@@ -150,7 +150,7 @@ function JobAvl() {
                   <div className="text-lg text-black m-2 mt-7 font-bold">
                     {data.title}
                   </div>
-                  <div className="info">
+                  <div className="">
                     <p className="text-sm text-slate-300 font-bold">
                       {data.company}
                     </p>

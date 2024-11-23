@@ -10,7 +10,7 @@ function DeatilApplication() {
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get(
-        `http://localhost:5000/api/application/${id}`
+        `https://intershal-backend.onrender.com/api/application/${id}`
       );
 
       setData([response.data]);

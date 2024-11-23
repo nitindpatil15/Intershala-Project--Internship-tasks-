@@ -12,7 +12,7 @@ function DeatilApplication() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/application/${id}`
+          `https://intershal-backend.onrender.com/api/application/${id}`
         );
         setData([response.data]);
         console.log(response.data);
@@ -28,7 +28,7 @@ function DeatilApplication() {
       if (!firebaseUid) throw new Error("User not authenticated");
 
       const response = await axios.put(
-        `http://localhost:5000/api/application/${id}`,
+        `https://intershal-backend.onrender.com/api/application/${id}`,
         {
           action,
           firebaseUid,

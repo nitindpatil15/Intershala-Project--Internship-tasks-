@@ -19,7 +19,7 @@ function JobDetail() {
   useEffect(() => {
     const fetchData = async () => {
       const response = await axios.get(
-        `http://localhost:5000/api/job/${id}`
+        `https://intershal-backend.onrender.com/api/job/${id}`
       );
 
       const { company, category } = response.data;
@@ -51,7 +51,7 @@ function JobDetail() {
 
       await axios
         .post(
-          "http://localhost:5000/api/application",
+          "https://intershal-backend.onrender.com/api/application",
           bodyJson
         )
         .then((res) => {})

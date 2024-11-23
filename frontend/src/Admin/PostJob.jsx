@@ -49,7 +49,7 @@ function PostJOb() {
         AdditionalInfo: additionalInfo,
       };
       axios
-        .post("http://localhost:5000/api/job", bodyJosn)
+        .post("https://intershal-backend.onrender.com/api/job", bodyJosn)
         .then((res) => {
           console.log(res.data);
         })
