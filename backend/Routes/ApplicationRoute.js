@@ -13,6 +13,7 @@ router.post("/", async (req, res) => {
     body: req.body.body,
     ApplicationId: req.body.ApplicationId,
   });
+  console.log(applicationData)
   await applicationData
     .save()
     .then((data) => {
@@ -22,6 +23,7 @@ router.post("/", async (req, res) => {
       console.log(error, "not able to post the data");
     });
 });
+
 router.get("/", async (req, res) => {
   try {
     const data = await application.find();
@@ -31,6 +33,7 @@ router.get("/", async (req, res) => {
     res.status(404).json({ error: "Internal server error " });
   }
 });
+
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
   try {

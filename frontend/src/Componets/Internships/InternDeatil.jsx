@@ -5,8 +5,8 @@ import "./deatil.css";
 import axios from "axios";
 import { doc, getDoc, getFirestore } from "firebase/firestore";
 
-function InternDeatil({userId}) {
-  const[user,setUser]=useState(null)
+function InternDeatil({ userId }) {
+  const [user, setUser] = useState(null);
   const [isDivVisible, setDivVisible] = useState(false);
   const [textare, setTextare] = useState("");
   const [company, setCompany] = useState("");
@@ -24,24 +24,39 @@ function InternDeatil({userId}) {
   const [data, setData] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
-      const userDocRef = doc(getFirestore(), "users", userId);
+      try {
+        // Fetch user details from Firestore
+        const userDocRef = doc(getFirestore(), "users", userId);
         const userSnapshot = await getDoc(userDocRef);
+
         if (userSnapshot.exists()) {
           setUser(userSnapshot.data());
+          console.log("User data:", userSnapshot.data());
         } else {
           console.error("User not found.");
         }
-      const response = await axios.get(
-        `http://localhost:5000/api/internship/${id}`
-      );
-      setData(response.data);
 
-      const { company, category } = response.data;
-      setCompany(company);
-      setCategory(category);
+        // Fetch internship details
+        const response = await axios.get(
+          `http://localhost:5000/api/internship/${id}`
+        );
+
+        if (response.data) {
+          setData(response.data);
+          const { company = "", category = "" } = response.data;
+          setCompany(company);
+          setCategory(category);
+          console.log("Internship data:", response.data);
+        } else {
+          console.error("Internship data not found.");
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error.message);
+      }
     };
+
     fetchData();
-  });
+  }, [userId,id]);
 
   const submitApplication = async () => {
     const text = document.getElementById("text");
@@ -57,10 +72,7 @@ function InternDeatil({userId}) {
       };
 
       await axios
-        .post(
-          "http://localhost:5000/api/application",
-          bodyJson
-        )
+        .post("http://localhost:5000/api/application", bodyJson)
         .then((res) => {})
         .catch((err) => {
           alert("error happend");

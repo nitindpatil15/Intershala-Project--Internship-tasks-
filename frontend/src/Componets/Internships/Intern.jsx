@@ -57,7 +57,7 @@ function Intern() {
   };
   useEffect(() => {
     filterInterships(serachCategory, searchLoaction);
-  }, [searchLoaction, serachCategory]);
+  });
   console.log(filterInternship);
 
   return (

@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import logo from "../../Assets/logo.png";
 import "./sidebar.css";
 import { Link, useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../Feature/Userslice";
 import { signOut } from "firebase/auth";
 import { auth } from "../../firebase/firebase";
+import { doc, getDoc, getFirestore } from "firebase/firestore";
 
-function Sidebar() {
+function Sidebar({ userId }) {
+  const [user, setUser] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const navigate = useNavigate();
+
   const openSidebar = () => {
     setSidebarOpen(true);
   };
@@ -19,6 +20,28 @@ function Sidebar() {
   };
 
   useEffect(() => {
+    const fetchUserData = async () => {
+      if (!userId) {
+        console.error("User ID is undefined");
+        return;
+      }
+
+      try {
+        const userDocRef = doc(getFirestore(), "users", userId);
+        const userSnapshot = await getDoc(userDocRef);
+
+        if (userSnapshot.exists()) {
+          setUser(userSnapshot.data());
+        } else {
+          console.error("User not found.");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error.message);
+      }
+    };
+
+    fetchUserData();
+
     const handleOutsideClick = (e) => {
       if (
         sidebarOpen &&
@@ -34,17 +57,18 @@ function Sidebar() {
     return () => {
       document.removeEventListener("click", handleOutsideClick);
     };
-  }, [sidebarOpen]);
+  }, [sidebarOpen, userId]);
+
   const logoutFunction = () => {
     signOut(auth);
     navigate("/");
   };
-  const user = useSelector(selectUser);
+
   return (
     <>
       <div className="App2 -mt-2 overflow-hidden">
         <Link to="/">
-          <img src={logo} alt="" id="nav2-img" />{" "}
+          <img src={logo} alt="Logo" id="nav2-img" />
         </Link>
         <div className={`sidebar ${sidebarOpen ? "open" : ""}`}>
           <span className="cursor-pointer close-btn" onClick={closeSidebar}>
@@ -55,65 +79,69 @@ function Sidebar() {
               <div className="profile">
                 <Link to={"/profile"}>
                   <img
-                    className="rounded-full justify-center"
-                    src={user.photo}
-                    alt=""
-                    srcSet=""
+                    className="rounded-full justify-center mx-auto w-24"
+                    src={user.photo || "/default-avatar.png"} // Use a default image if photo is undefined
+                    alt="Profile"
                   />
                 </Link>
-                <p className=" text-center">
+                <p className="text-center">
                   Profile name{" "}
-                  <span className="font-bold text-blue-500">{user?.name}</span>
+                  <span className="font-bold text-blue-500">
+                    {user.displayName || "N/A"}
+                  </span>
                 </p>
               </div>
             </>
           ) : (
             <div className="auth"></div>
           )}
-          <Link to="/internship">internships </Link>
-          <Link to="/Jobs">Jobs </Link>
-
+          <Link to="/internship">Internships</Link>
+          <Link to="/Jobs">Jobs</Link>
           <Link to={"/"} className="small">
-            contact Us
+            Contact Us
           </Link>
           <hr />
           {user ? (
             <>
               <div className="addmore">
-                {user ? (
-                  <Link to={"/userapplication"}>
-                    <p>My Applications</p>
-                  </Link>
-                ) : (
-                  <Link to={"/register"}>
-                    <p>My Applications</p>
-                  </Link>
-                )}
-
-                <Link>
+                <Link to={"/userapplication"}>
+                  <p>My Applications</p>
+                </Link>
+                <Link to={user.pdfUrl || "#"} target="_blank">
                   <p>View Resume</p>
                 </Link>
                 <Link>
                   <p>More</p>
                 </Link>
-                <button className="bt-log" id="bt" onClick={logoutFunction}>
+                <button
+                  onClick={logoutFunction}
+                  className="px-4 py-1 w-full bg-black text-white"
+                >
                   Logout <i className="bi bi-box-arrow-right"></i>
-                </button>
-                <br />
-                <br />
-                <button onClick={logoutFunction}>
-                  Log Out <i className="bi bi-box-arrow-right"></i>
                 </button>
               </div>
             </>
           ) : (
             <div className="addmore">
               <p>Register- As a Student</p>
-              <p>Register- As a Employer</p>
-              <br />
-              <br />
+              <p >Register- As an Employer</p>
             </div>
           )}
+
+          {!user ? (
+            <>
+              <div className="reg">
+                <Link to="/register">
+                  <button className="">Register</button>
+                </Link>
+              </div>
+              <div className="">
+                <Link to={"/adminLogin"}>
+                  <button id="">Admin Login</button>
+                </Link>
+              </div>
+            </>
+          ) : null}
         </div>
 
         <div className="main">
@@ -130,24 +158,6 @@ function Sidebar() {
           <i className="bi bi-search"></i>
           <input type="search" placeholder="Search" />
         </div>
-
-        {user ? (
-          <></>
-        ) : (
-          <>
-            <div className="reg">
-              <Link to="/register">
-                {" "}
-                <button className="btn4">Register</button>
-              </Link>
-            </div>
-            <div className="admin">
-              <Link to={"/adminLog"}>
-                <button id="admin"> Admin Login</button>
-              </Link>
-            </div>
-          </>
-        )}
 
         <p className="text-red-300">Hire Talent</p>
       </div>

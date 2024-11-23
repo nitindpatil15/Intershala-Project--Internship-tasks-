@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 function DeatilApplication() {
   const [data, setData] = useState([]);
@@ -37,9 +38,15 @@ function DeatilApplication() {
                   {data.company}
                 </h1>
                 <h2>Cover Letter</h2>
-                <p class="leading-relaxed font-bold">
-                  {data.coverLetter}
-                </p>
+                <p class="leading-relaxed font-bold">{data.coverLetter}</p>
+                {data.user?.pdfUrl?
+                  <Link className="cursor-pointer" to={data.user?.pdfUrl}>
+                  <div>
+                    <h2 className="bg-black text-white p-4 rounded-xl">Click to View Resume</h2>
+                  </div>
+                </Link>:<p>Resume Not attched</p>
+                }
+
                 <div class="flex mt-6  pb-5 border-b-2 border-gray-100 mb-5">
                   <span class="mr-3">Application Date</span>
                   <br />
@@ -49,7 +56,7 @@ function DeatilApplication() {
                 </div>
                 <h3 className="capitalize">Status : {data.status}</h3>
                 <h4 className=" mt-9">Applied By</h4>
-                <p className="font-bold ">{data.user.name}</p>
+                <p className="font-bold ">{data.user.displayName}</p>
               </div>
             </div>
           </div>

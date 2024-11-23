@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Jobs from "../Data/JobsDataAvl";
 import { selectUser } from "../../Feature/Userslice";
 import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";

@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react";
-import { getAuth } from "firebase/auth"; // Import Firebase Authentication
+import { getAuth } from "firebase/auth";
 import {
   getFirestore,
   collection,
   query,
   onSnapshot,
-} from "firebase/firestore"; // Import Firestore
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 import { app } from "../../firebase/firebase";
 import { useNavigate } from "react-router-dom";
 
 const Notifications = () => {
-  const navigate = useNavigate()
-  const db = getFirestore(app); // Get Firestore instance
-  const auth = getAuth(app); // Get Auth instance
+  const navigate = useNavigate();
+  const db = getFirestore(app);
+  const auth = getAuth(app);
   const [notifications, setNotifications] = useState([]);
-  const userId = auth.currentUser?.uid; // Access the current user ID safely
+  const userId = auth.currentUser?.uid;
 
   useEffect(() => {
     if (userId) {
@@ -24,32 +26,46 @@ const Notifications = () => {
         const newNotifications = [];
         snapshot.docChanges().forEach((change) => {
           if (change.type === "added") {
-            newNotifications.push(change.doc.data());
+            newNotifications.push({ id: change.doc.id, ...change.doc.data() });
             showBrowserNotification(
               change.doc.data().message,
               change.doc.data().status
             );
           }
         });
-        setNotifications(newNotifications);
-        console.log('unsubscribe: ',unsubscribe)
-        console.log(newNotifications);
+        setNotifications((prev) => [...prev, ...newNotifications]);
       });
 
-      return () => unsubscribe(); // Cleanup listener when component unmounts
+      return () => unsubscribe();
     }
   }, [userId, db]);
 
   const showBrowserNotification = (message, status) => {
-    console.log("Attempting to show notification:", message, status);
     if (Notification.permission === "granted") {
       const options = {
         body: message,
-        backgroundColor: status === "accepted" ? "green" : "red", // Example styling
+        icon: "/favicon.ico", // Add an icon if required
       };
-
       new Notification("Application Status Update", options);
-      console.log(options)
+    }
+  };
+
+  const handleNotificationClick = async (notifId) => {
+    // Navigate to user application page
+    navigate("/userapplication");
+
+    // Delete the notification from Firestore
+    if (userId) {
+      const notifRef = doc(db, "users", userId, "notifications", notifId);
+      try {
+        await deleteDoc(notifRef);
+        // Remove the notification from the state
+        setNotifications((prev) =>
+          prev.filter((notif) => notif.id !== notifId)
+        );
+      } catch (error) {
+        console.error("Error deleting notification:", error.message);
+      }
     }
   };
 
@@ -57,11 +73,11 @@ const Notifications = () => {
     <div>
       <h3 className="text-center text-2xl py-2">Your Notifications</h3>
       <ul className="flex flex-col">
-        {notifications.map((notif, index) => (
-          <div key={index}>
+        {notifications.map((notif) => (
+          <div key={notif.id}>
             <div
-            onClick={()=>{navigate('/userapplication')}}
-              className="notification my-2"
+              onClick={() => handleNotificationClick(notif.id)}
+              className="notification my-2 cursor-pointer"
               style={{
                 backgroundColor:
                   notif.status === "accepted"

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { getAuth } from "firebase/auth";
+import { Link } from "react-router-dom";
 
 function DeatilApplication() {
   const [data, setData] = useState([]);
@@ -67,6 +67,17 @@ function DeatilApplication() {
                 </h1>
                 <h2>Cover Letter</h2>
                 <p className="leading-relaxed font-bold">{data.coverLetter}</p>
+                {data.user?.pdfUrl ? (
+                  <Link className="cursor-pointer" to={data.user?.pdfUrl}>
+                    <div>
+                      <h2 className="bg-black text-white p-4 rounded-xl">
+                        Click to View Resume
+                      </h2>
+                    </div>
+                  </Link>
+                ) : (
+                  <p>Resume Not attched</p>
+                )}
                 <div className="flex mt-6 pb-5 border-b-2 border-gray-100 mb-5">
                   <span className="mr-3">Application Date</span>
                   <p className="font-bold">
@@ -74,11 +85,14 @@ function DeatilApplication() {
                   </p>
                 </div>
                 <h4 className="mt-9">Applied By</h4>
-                <p className="font-bold ">{data.user.name}</p>
+                <p className="font-bold ">{data.user.displayName}</p>
                 <div className="flex mt-24 justify-around">
                   {data.status !== "pending" ? (
                     <>
-                      <h1 className="text-2xl">Application : <span className="capitalize">{data.status}</span></h1>
+                      <h1 className="text-2xl">
+                        Application :{" "}
+                        <span className="capitalize">{data.status}</span>
+                      </h1>
                     </>
                   ) : (
                     <>

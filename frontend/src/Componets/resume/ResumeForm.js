@@ -8,7 +8,7 @@ const ResumeForm = ({ userId }) => {
     name: "",
     qualification: "",
     experience: "",
-    personalDetails: "",
+    about: "",
     email: "",
     phone: "",
     linkedin: "",
@@ -159,10 +159,10 @@ const ResumeForm = ({ userId }) => {
       </div>
 
       <div className="mb-4">
-        <label className="block text-gray-700">Personal Details:</label>
+        <label className="block text-gray-700">About:</label>
         <textarea
-          name="personalDetails"
-          value={formData.personalDetails}
+          name="about"
+          value={formData.about}
           onChange={handleChange}
           required
           className="w-full p-2 border border-gray-300 rounded-md"

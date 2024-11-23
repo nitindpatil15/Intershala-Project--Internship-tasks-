@@ -22,7 +22,7 @@ function ViewAllApplication() {
   return (
     <div>
       <div className="hide">
-        <h1 className="text-3xl font-semibold mt-3">Total Applications</h1>
+        <h1 className="text-3xl font-semibold mt-3 text-center">Total Applications</h1>
         <div className="flex justify-center " id="tabel">
           <div className="applications flex flex-col mt-7">
             <div className="overflow-x-auto sm:-mx-6 lg:mx-8">
@@ -34,6 +34,9 @@ function ViewAllApplication() {
                     </th>
                     <th scope="col" className="px-5 py-4">
                       Category
+                    </th>
+                    <th scope="col" className="px-5 py-4">
+                      Resume
                     </th>
                     <th scope="col" className="px-5 py-4">
                       Applied On
@@ -60,10 +63,26 @@ function ViewAllApplication() {
                           {data.category}
                         </td>
                         <td className="whitespace-nowrap px-6 py-4">
+                          {data.user?.pdfUrl ? (
+                            <Link
+                              className="cursor-pointer"
+                              to={data.user?.pdfUrl}
+                            >
+                              <div>
+                                <h2 className="bg-black text-white p-4 rounded-xl">
+                                   View
+                                </h2>
+                              </div>
+                            </Link>
+                          ) : (
+                            <p>Not attched</p>
+                          )}
+                        </td>
+                        <td className="whitespace-nowrap px-6 py-4">
                           {new Date(data?.createAt).toLocaleDateString()}
                         </td>
                         <td className="whitespace-nowrap px-6 py-4">
-                          {data.user.name}
+                          {data.user.displayName}
                         </td>
                         <td className="whitespace-nowrap px-6 py-4">
                           <Link to={`/detailApplication?a=${data._id}`}>
@@ -84,7 +103,7 @@ function ViewAllApplication() {
       </div>
 
       <div className="show">
-        <h1>View All Applications</h1>
+        <h1 className="text-center text-xl">View All Applications</h1>
         {application.map((data) => (
           <section class="text-gray-600 body-font">
             <div class="container px-5 py-2 mx-auto flex flex-wrap">
@@ -111,7 +130,7 @@ function ViewAllApplication() {
                       </h2>
                       <p class="leading-relaxed text-base">
                         {" "}
-                        Applied by {data.user.name}
+                        Applied by {data.user?.displayName}
                       </p>
                       <p class="leading-relaxed text-base">
                         {" "}

@@ -132,11 +132,17 @@ const RazorpayPayment = ({ userId }) => {
   }
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg border border-gray-200 h-32">
+    <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg border border-gray-200">
       {user.status === "prime" ? (
-        <Link to='/resume-form' className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+        <div>
+          <Link to='/resume-form' className="mx-5 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
           Build Resume
         </Link>
+        {user?.pdfUrl?
+          <Link to={user?.pdfUrl} target="_blank" className=" bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">View Current Resume</Link>
+          :<></>
+        }
+        </div>
       ) : (
         <div className="text-center">
           {!otpVerified ? (

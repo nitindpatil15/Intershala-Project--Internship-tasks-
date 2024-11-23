@@ -151,7 +151,7 @@ function Profile({ userId }) {
                 onClick={handleImageUpload}
                 className="bg-blue-500 text-white rounded-full px-4 py-2 mt-2"
               >
-                Upload Profile Picture
+                Change Profile Picture
               </button>
             </div>
 

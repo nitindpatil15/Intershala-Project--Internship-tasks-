@@ -75,6 +75,10 @@ router.post("/save-resume", async (req, res) => {
       });
       pdfDoc.moveDown();
 
+      // About User
+      pdfDoc.fontSize(16).text("Summary", { underline: true });
+      pdfDoc.fontSize(12).text(resumeData.about);
+      pdfDoc.moveDown();
 
       // Personal Details Section
       pdfDoc.fontSize(16).text("Personal Details", { underline: true });
@@ -99,11 +103,6 @@ router.post("/save-resume", async (req, res) => {
       // Experience Section
       pdfDoc.fontSize(16).text("Experience", { underline: true });
       pdfDoc.fontSize(12).text(resumeData.experience);
-      pdfDoc.moveDown();
-
-      // Additional Information
-      pdfDoc.fontSize(16).text("Personal Details", { underline: true });
-      pdfDoc.fontSize(12).text(resumeData.personalDetails);
       pdfDoc.moveDown();
 
       pdfDoc.end();

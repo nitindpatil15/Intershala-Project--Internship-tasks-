@@ -50,7 +50,7 @@ function JobAvl() {
   };
   useEffect(() => {
     filterJobs(serachCategory, searchLoaction);
-  }, [searchLoaction, serachCategory]);
+  });
 
   return (
     <>

@@ -229,15 +229,15 @@ function Home() {
         </div>
       </div>
 
-      <div className="logins flex  h-32 mt-8">
+      <div className="logins flex h-32 mt-8">
         <div className="cont">
-          <p className="flex justify-center text-white text-xl items-center m-5 w-30">
+          <p className="flex justify-center text-white text-xl items-center m-5">
             Empower your career with InternArea today
           </p>
         </div>
         <div className="log flex">
-          <a
-            href="/register"
+          <Link
+            to="/register"
             id="buttons"
             class="flex items-center  bg-white h-9 justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100"
           >
@@ -264,10 +264,10 @@ function Home() {
             <p class="px-4 py-3 w-5/6 text-center text-sm text-gray-600 font-bold ">
               Sign in with Google
             </p>
-          </a>
-          <a to="/register">
+          </Link>
+          <Link to="/register">
             <button className="btn6 "> Register</button>
-          </a>
+          </Link>
         </div>
       </div>
     </>

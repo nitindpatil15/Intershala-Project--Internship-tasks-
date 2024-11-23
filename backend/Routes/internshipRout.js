@@ -2,8 +2,6 @@ const express =require("express")
 const router= express.Router();
 const internship=require("../Model/Internship");
 
-
-
 router.post("/",async (req,res)=>{
     const internshipData=new internship({
         title: req.body.title,

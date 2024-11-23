@@ -56,7 +56,7 @@ function App() {
   return (
     <div className="App">
       <Navbar />
-      <Sidebar/>
+      <Sidebar userId={user?.uid}/>
       <PopupNotifications/>
       <Routes>
         <Route path="/" element={<Home />} />
