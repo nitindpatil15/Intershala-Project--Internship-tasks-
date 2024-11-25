@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import {
   signInWithPopup,
   createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
 import { auth, provider } from "../../firebase/firebase";
