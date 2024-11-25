@@ -134,8 +134,8 @@ const RazorpayPayment = ({ userId }) => {
   return (
     <div className="max-w-md mx-auto p-6 bg-white shadow-lg rounded-lg border border-gray-200">
       {user.status === "prime" ? (
-        <div>
-          <Link to='/resume-form' className="mx-5 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+        <div className="flex md:block flex-col text-center">
+          <Link to='/resume-form' className="mx-5 bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 my-2">
           Build Resume
         </Link>
         {user?.pdfUrl?

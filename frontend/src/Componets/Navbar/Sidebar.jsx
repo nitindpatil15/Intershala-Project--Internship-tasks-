@@ -107,7 +107,7 @@ function Sidebar({ userId }) {
                 <Link to={"/userapplication"}>
                   <p>My Applications</p>
                 </Link>
-                <Link to={user.pdfUrl || "#"} target="_blank">
+                <Link to={"/resume"}>
                   <p>View Resume</p>
                 </Link>
                 <Link>

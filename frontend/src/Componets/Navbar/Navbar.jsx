@@ -90,7 +90,7 @@ function Navbar() {
 
   return (
     <div>
-      <nav className="nav1 py-1">
+      <nav className="nav1 py-1 hidden md:block">
         <ul>
           <div className="img">
             <Link to={"/"}>
@@ -129,7 +129,7 @@ function Navbar() {
                       id="picpro"
                     />
                   </Link>
-                  <Link to={"/resume"} className="bg-black text-white p-2 rounded-xl">Resume</Link>
+                  <Link to={"/resume"} className="bg-black text-white p-2 mx-2 rounded-xl">Resume</Link>
                 </div>
                 <button
                   className="bt-log mx-5"
