@@ -137,7 +137,7 @@ function Profile({ userId }) {
             </div>
             <div className="my-2">
               <Link
-                to={user?.pdfUrl || "#"}
+                to={user?.pdfUrl || "/resume"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-xl bg-blue-400 p-2 rounded-xl items-center"

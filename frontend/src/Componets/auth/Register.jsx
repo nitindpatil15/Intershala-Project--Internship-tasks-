@@ -11,7 +11,6 @@ import { getFirestore, doc, setDoc, getDoc } from "firebase/firestore";
 
 const Register = () => {
   const [fname, setFname] = useState("");
-  const [lname, setLname] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isStudent, setStudent] = useState(true);
@@ -89,8 +88,8 @@ const Register = () => {
         // Save new user to Firestore
         const newUserRef = doc(db, "users", user.uid);
         await setDoc(newUserRef, {
-          firstName: fname,
-          lastName: lname,
+          displayName: fname,
+          notificationsEnabled:false,
           email: user.email,
           status: "free",
           uid: user.uid,
@@ -126,7 +125,7 @@ const Register = () => {
                 htmlFor="fname"
                 className="block text-sm font-medium text-gray-700"
               >
-                First Name
+                Full Name
               </label>
               <input
                 type="text"
@@ -134,22 +133,6 @@ const Register = () => {
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                 value={fname}
                 onChange={(e) => setFname(e.target.value)}
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label
-                htmlFor="lname"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Last Name
-              </label>
-              <input
-                type="text"
-                id="lname"
-                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                value={lname}
-                onChange={(e) => setLname(e.target.value)}
                 required
               />
             </div>

@@ -44,7 +44,7 @@ const RazorpayPayment = ({ userId }) => {
 
     try {
       // Send OTP to user's email
-      await axios.post("http://localhost:5000/api/otp/send-otp", {
+      await axios.post("https://intershal-backend.onrender.com/api/otp/send-otp", {
         email: user?.email,
         otp: generatedOtp,
       });
