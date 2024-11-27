@@ -84,15 +84,7 @@ body {
   left: 46%;
   top: -6.5rem;
 }
-.search2 input {
-  font-size: 15px;
-  padding: 12px 2px;
-  width: 100px;
-  color: black;
-  font-weight: bolder;
-  border: none;
-  outline: none;
-}
+
 .all-internships {
   position: relative;
   left: 23%;
@@ -124,8 +116,8 @@ body {
 @media screen and (max-width: 768px) {
   .search2 {
     position: relative;
-    left: 62%;
-    top: -6.9rem;
+    left: 71%;
+    top: -5.5rem;
   }
   .search2 input {
     margin-top: 15px;
