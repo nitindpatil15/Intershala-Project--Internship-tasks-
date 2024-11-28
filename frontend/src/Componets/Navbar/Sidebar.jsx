@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import logo from "../../Assets/logo.png";
 import "./sidebar.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link} from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth, db } from "../../firebase/firebase";
 import { collection, doc, getDoc, onSnapshot, query } from "firebase/firestore";
@@ -14,7 +14,6 @@ function Sidebar() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
 
-  const navigate = useNavigate();
 
   const openSidebar = () => setSidebarOpen(true);
   const closeSidebar = () => setSidebarOpen(false);
