@@ -10,7 +10,7 @@ import JobDetail from "./Componets/Job/JobDetail";
 import InternDeatil from "./Componets/Internships/InternDeatil";
 import { useDispatch, useSelector } from "react-redux";
 import { login, logout, selectUser } from "./Feature/Userslice";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { auth } from "./firebase/firebase";
 import Profile from "./profile/Profile";
 import AdminLogin from "./Admin/AdminLogin";
@@ -48,17 +48,32 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    if ("Notification" in window) {
-      if (Notification.permission === "granted") {
-        Notification.requestPermission().then((permission) => {
-          if (permission === "granted") {
-            console.log(`Notification permission: ${permission}`);
-            sendNotification()
-          }
-        });
-      }
+  const requestNotificationPermission =useCallback(()=>{
+    if('Notification' in window){
+      Notification.requestPermission().then(function(permission){
+        if(permission === 'granted'){
+          console.log('Notification permission granted');
+          sendNotification()
+        }
+      });
     }
+  },[]);
+
+  useEffect(() => {
+    if('Notification' in window){
+      requestNotificationPermission()
+    }
+
+    // if ("Notification" in window) {
+    //   if (Notification.permission === "granted") {
+    //     Notification.requestPermission().then((permission) => {
+    //       if (permission === "granted") {
+    //         console.log(`Notification permission: ${permission}`);
+    //         sendNotification()
+    //       }
+    //     });
+    //   }
+    // }
 
     // if (user?.uid) {
     //   const unsubscribe = onSnapshot(
@@ -121,7 +136,7 @@ function App() {
         dispatch(logout());
       }
     });
-  }, [user?.uid, dispatch]);
+  }, [user?.uid, dispatch, requestNotificationPermission]);
 
   return (
     <div className="App">
