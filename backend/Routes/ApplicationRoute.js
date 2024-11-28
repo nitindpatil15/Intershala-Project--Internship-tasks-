@@ -3,6 +3,7 @@ const router = express.Router();
 const application = require("../Model/Application");
 const Application = require("../Model/Application");
 const admin = require("firebase-admin");
+const { v4: uuidv4 } = require("uuid");
 
 router.post("/", async (req, res) => {
   const applicationData = new application({
@@ -13,7 +14,7 @@ router.post("/", async (req, res) => {
     body: req.body.body,
     ApplicationId: req.body.ApplicationId,
   });
-  console.log(applicationData)
+  console.log(applicationData);
   await applicationData
     .save()
     .then((data) => {
@@ -80,10 +81,12 @@ router.put("/:id", async (req, res) => {
 
     const message =
       status === "accepted"
-        ? "Congratulations! You have been accepted."
+        ? "Congratulations! Your Application has been accepted."
         : "Sorry, your application has been rejected.";
 
+    const u_id = uuidv4();
     const notificationData = {
+      id: u_id,
       message,
       status,
       timestamp: new Date(),

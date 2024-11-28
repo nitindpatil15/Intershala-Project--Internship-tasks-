@@ -98,7 +98,8 @@ function Sidebar() {
 
   const logoutFunction = () => {
     signOut(auth);
-    navigate("/");
+    setSidebarOpen(false)
+    window.location.reload()
   };
 
   return (
