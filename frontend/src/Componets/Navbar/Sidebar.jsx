@@ -1,12 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import logo from "../../Assets/logo.png";
 import "./sidebar.css";
 import { Link, useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth, db } from "../../firebase/firebase";
 import { collection, doc, getDoc, onSnapshot, query } from "firebase/firestore";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../Feature/Userslice";
 
-function Sidebar({ userId }) {
+function Sidebar() {
+  const userId = useSelector(selectUser)
   const [user, setUser] = useState(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
@@ -17,14 +20,14 @@ function Sidebar({ userId }) {
   const closeSidebar = () => setSidebarOpen(false);
 
   // Function to fetch user data
-  const fetchUserData = async () => {
-    if (!userId) {
+  const fetchUserData = useCallback(async () => {
+    if (!userId?.uid) {
       console.error("User ID is undefined");
       return;
     }
 
     try {
-      const userDocRef = doc(db, "users", userId);
+      const userDocRef = doc(db, "users", userId?.uid);
       const userSnapshot = await getDoc(userDocRef);
 
       if (userSnapshot.exists()) {
@@ -35,7 +38,7 @@ function Sidebar({ userId }) {
     } catch (error) {
       console.error("Error fetching user data:", error.message);
     }
-  };
+  }, [userId]);
 
   // Function to display browser notifications
   const showBrowserNotification = (message, status) => {
@@ -53,7 +56,7 @@ function Sidebar({ userId }) {
     let unsubscribeNotifications = null;
 
     if (userId) {
-      const notificationsRef = collection(db, "users", userId, "notifications");
+      const notificationsRef = collection(db, "users", userId?.uid, "notifications");
       const q = query(notificationsRef);
 
       unsubscribeNotifications = onSnapshot(q, (snapshot) => {
@@ -90,7 +93,8 @@ function Sidebar({ userId }) {
       if (unsubscribeNotifications) unsubscribeNotifications();
       document.removeEventListener("click", handleOutsideClick);
     };
-  }, [userId, sidebarOpen]);
+    // eslint-disable-next-line
+  }, [userId, sidebarOpen, fetchUserData]);
 
   const logoutFunction = () => {
     signOut(auth);
@@ -185,16 +189,16 @@ function Sidebar({ userId }) {
       </div>
 
       <div className="search2">
-      <Link to="/notifications" className="bg-gray-400 p-1 rounded-lg mt-14">
-        Alert{" "}
-        {notifications.length > 0 && (
-          <span className="text-base font-bold rounded-full bg-black px-1 text-red-600">
-            {notifications.length}
-          </span>
-        )}
-      </Link>
+        <Link to="/notifications" className="bg-gray-400 p-1 rounded-lg mt-14">
+          Alert{" "}
+          {notifications.length > 0 && (
+            <span className="text-base font-bold rounded-full bg-black px-1 text-red-600">
+              {notifications.length}
+            </span>
+          )}
+        </Link>
       </div>
-      
+
       <p className="text-red-300">Hire Talent</p>
     </div>
   );

@@ -66,7 +66,7 @@ function Intern() {
         <div className="first-int mb-14">
           <div className="filter-section w-1/6">
             <p id="filter-ico" className=" text-center">
-              <i onClick={showDiv} class="bi bi-funnel  text-blue-400"></i>{" "}
+              <i onClick={showDiv} className="bi bi-funnel  text-blue-400"></i>{" "}
               Filter
             </p>
             <div className="fill flex flex-col ml-2">
@@ -116,7 +116,7 @@ function Intern() {
             </div>
 
             <p className=" mt-5 text-blue-400">
-              View more filters <i class="bi bi-chevron-down"></i>
+              View more filters <i className="bi bi-chevron-down"></i>
             </p>
             <span className="justify-end flex text-blue-400 mr-3">
               Clear all
@@ -126,7 +126,7 @@ function Intern() {
             <div className="search-container">
               <input type="text" placeholder="eg. Design Media MBA" />
               <div className="search-icon">
-                <i class="bi bi-search"></i>
+                <i className="bi bi-search"></i>
               </div>
             </div>
           </div>
@@ -135,7 +135,7 @@ function Intern() {
         <div className="all-internships">
           <div className=" show show2 flex justify-center">
             <p className="filterico text-center" onClick={showDiv}>
-              filter <i class="bi bi-funnel  text-blue-400"></i>{" "}
+              filter <i className="bi bi-funnel  text-blue-400"></i>{" "}
             </p>
           </div>
           <p className="head font-bold text-lg text-center ">
@@ -166,19 +166,19 @@ function Intern() {
                   <div className="flex text-sm justify-between">
                     <p className="mt-3">
                       {" "}
-                      <i class="bi bi-play-circle-fill"></i> Start Date <br />{" "}
+                      <i className="bi bi-play-circle-fill"></i> Start Date <br />{" "}
                       {data.StartDate}
                     </p>
 
                     <p className="mt-3">
                       {" "}
-                      <i class="bi bi-calendar-check-fill"></i> Duration <br />
+                      <i className="bi bi-calendar-check-fill"></i> Duration <br />
                       {data.Duration}
                     </p>
 
                     <p className="mt-3">
                       {" "}
-                      <i class="bi bi-cash"></i> Stipend <br /> {data.stipend}
+                      <i className="bi bi-cash"></i> Stipend <br /> {data.stipend}
                     </p>
                   </div>
                 </div>
@@ -187,7 +187,7 @@ function Intern() {
                 </span>
                 <br />
                 <span>
-                  <i class="bi bi-stopwatch text-green-300"></i>23/11/2065
+                  <i className="bi bi-stopwatch text-green-300"></i>23/11/2065
                 </span>
                 <div className="flex justify-end" id="hr">
                   <Link
@@ -211,10 +211,10 @@ function Intern() {
             <div className="first2-int mb-14">
               <div className="filter-section w-1/6">
                 <button id="close-btn" onClick={hidediv}>
-                  <i class=" text-3xl bi bi-x"></i>
+                  <i className=" text-3xl bi bi-x"></i>
                 </button>
                 <p className="text-center">
-                  <i class="bi bi-funnel  text-blue-400"></i> Filter
+                  <i className="bi bi-funnel  text-blue-400"></i> Filter
                 </p>
                 <div className="fill flex flex-col ml-2">
                   <label htmlFor="pro">Profile</label>
@@ -263,7 +263,7 @@ function Intern() {
                 </div>
 
                 <p className=" mt-5 text-blue-400">
-                  View more filters <i class="bi bi-chevron-down"></i>
+                  View more filters <i className="bi bi-chevron-down"></i>
                 </p>
                 <span className="justify-end flex text-blue-400 mr-3">
                   Clear all
@@ -274,7 +274,7 @@ function Intern() {
                   <label htmlFor="ex ">Experince</label>
                   <input type="text" id="ex" placeholder="eg. 0-1 year" />
                   <div className="search-icon">
-                    <i class="bi bi-search"></i>
+                    <i className="bi bi-search"></i>
                   </div>
                 </div>
               </div>

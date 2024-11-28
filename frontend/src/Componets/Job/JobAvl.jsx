@@ -58,7 +58,7 @@ function JobAvl() {
         <div className="first-int mb-14">
           <div className="filter-section w-1/6">
             <p className="text-center">
-              <i class="bi bi-funnel  text-blue-400"></i> Filter
+              <i className="bi bi-funnel  text-blue-400"></i> Filter
             </p>
             <div className="fill flex flex-col ml-2">
               <label htmlFor="pro">Profile</label>
@@ -107,7 +107,7 @@ function JobAvl() {
             </div>
 
             <p className=" mt-5 text-blue-400">
-              View more filters <i class="bi bi-chevron-down"></i>
+              View more filters <i className="bi bi-chevron-down"></i>
             </p>
             <span className="justify-end flex text-blue-400 mr-3">
               Clear all
@@ -118,7 +118,7 @@ function JobAvl() {
               <label htmlFor="ex ">Experince</label>
               <input type="text" id="ex" placeholder="eg. 0-1 year" />
               <div className="search-icon">
-                <i class="bi bi-search"></i>
+                <i className="bi bi-search"></i>
               </div>
             </div>
           </div>
@@ -128,7 +128,7 @@ function JobAvl() {
           <div className=" show show2 flex justify-center">
             <p id="filter-ico" className="filterico text-center">
               filter{" "}
-              <i class="bi bi-funnel  text-blue-400" onClick={showDiv}></i>{" "}
+              <i className="bi bi-funnel  text-blue-400" onClick={showDiv}></i>{" "}
             </p>
           </div>
           <p className="head font-bold text-lg text-center ">
@@ -159,20 +159,20 @@ function JobAvl() {
                   <div className="flex text-sm justify-between">
                     <p className="mt-3">
                       {" "}
-                      <i class="bi bi-play-circle-fill"></i> Start Date <br />{" "}
+                      <i className="bi bi-play-circle-fill"></i> Start Date <br />{" "}
                       {data.StartDate}
                     </p>
 
                     <p className="mt-3">
                       {" "}
-                      <i class="bi bi-calendar-check-fill"></i> Experience{" "}
+                      <i className="bi bi-calendar-check-fill"></i> Experience{" "}
                       <br />
                       {data.Experience}
                     </p>
 
                     <p className="mt-3">
                       {" "}
-                      <i class="bi bi-cash"></i> Salary <br /> {data.CTC}
+                      <i className="bi bi-cash"></i> Salary <br /> {data.CTC}
                     </p>
                   </div>
                 </div>
@@ -181,7 +181,7 @@ function JobAvl() {
                 </span>
                 <br />
                 <span>
-                  <i class="bi bi-stopwatch text-green-300"></i>23/11/2065
+                  <i className="bi bi-stopwatch text-green-300"></i>23/11/2065
                 </span>
                 <div className="flex justify-end" id="hr">
                   <Link className="mt-10" to={`/detailjob?q=${data._id}`}>
@@ -203,10 +203,10 @@ function JobAvl() {
           <div className="first2-int mb-14">
             <div className="filter-section w-1/6">
               <button id="close-btn" onClick={hidediv}>
-                <i class=" text-3xl bi bi-x"></i>
+                <i className=" text-3xl bi bi-x"></i>
               </button>
               <p className="text-center">
-                <i class="bi bi-funnel  text-blue-400"></i> Filter
+                <i className="bi bi-funnel  text-blue-400"></i> Filter
               </p>
               <div className="fill flex flex-col ml-2">
                 <label htmlFor="pro">Profile</label>
@@ -255,7 +255,7 @@ function JobAvl() {
               </div>
 
               <p className=" mt-5 text-blue-400">
-                View more filters <i class="bi bi-chevron-down"></i>
+                View more filters <i className="bi bi-chevron-down"></i>
               </p>
               <span className="justify-end flex text-blue-400 mr-3">
                 Clear all
@@ -266,7 +266,7 @@ function JobAvl() {
                 <label htmlFor="ex ">Experince</label>
                 <input type="text" id="ex" placeholder="eg. 0-1 year" />
                 <div className="search-icon">
-                  <i class="bi bi-search"></i>
+                  <i className="bi bi-search"></i>
                 </div>
               </div>
             </div>

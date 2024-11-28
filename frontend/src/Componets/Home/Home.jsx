@@ -173,14 +173,14 @@ function Home() {
 
                 <hr className="mt-5" />
                 <p className="mt-3">
-                  <i class="bi bi-geo-alt-fill"></i> {data.location}{" "}
+                  <i className="bi bi-geo-alt-fill"></i> {data.location}{" "}
                 </p>
                 <p className="mt-1">
                   {" "}
-                  <i class="bi bi-cash-stack"></i> {data.stipend}
+                  <i className="bi bi-cash-stack"></i> {data.stipend}
                 </p>
                 <p className="mt-1">
-                  <i class="bi bi-calendar-fill"></i> {data.Duration}
+                  <i className="bi bi-calendar-fill"></i> {data.Duration}
                 </p>
                 <div className="more flex justify-between mt-6">
                   <span className="bg-slate-200 text-slate-400 w-20 rounded-sm text-center">
@@ -188,7 +188,7 @@ function Home() {
                   </span>
                   <Link to={`/detailInternship?q=${data._id}`}>
                     <span className="text-blue-500 mr-2">
-                      View details <i class="bi bi-chevron-right"></i>
+                      View details <i className="bi bi-chevron-right"></i>
                     </span>
                   </Link>
                 </div>
@@ -239,10 +239,10 @@ function Home() {
           <Link
             to="/register"
             id="buttons"
-            class="flex items-center  bg-white h-9 justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100"
+            className="flex items-center  bg-white h-9 justify-center mt-4 text-white rounded-lg shadow-md hover:bg-gray-100"
           >
-            <div class="px-4 py-3">
-              <svg class="h-6 w-6" viewBox="0 0 40 40">
+            <div className="px-4 py-3">
+              <svg className="h-6 w-6" viewBox="0 0 40 40">
                 <path
                   d="M36.3425 16.7358H35V16.6667H20V23.3333H29.4192C28.045 27.2142 24.3525 30 20 30C14.4775 30 10 25.5225 10 20C10 14.4775 14.4775 9.99999 20 9.99999C22.5492 9.99999 24.8683 10.9617 26.6342 12.5325L31.3483 7.81833C28.3717 5.04416 24.39 3.33333 20 3.33333C10.7958 3.33333 3.33335 10.7958 3.33335 20C3.33335 29.2042 10.7958 36.6667 20 36.6667C29.2042 36.6667 36.6667 29.2042 36.6667 20C36.6667 18.8825 36.5517 17.7917 36.3425 16.7358Z"
                   fill="#FFC107"
@@ -261,7 +261,7 @@ function Home() {
                 />
               </svg>
             </div>
-            <p class="px-4 py-3 w-5/6 text-center text-sm text-gray-600 font-bold ">
+            <p className="px-4 py-3 w-5/6 text-center text-sm text-gray-600 font-bold ">
               Sign in with Google
             </p>
           </Link>

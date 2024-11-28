@@ -97,31 +97,31 @@ function InternDeatil({ userId }) {
               <p className="text-sm text-slate-300 font-bold">{data.title}</p>
               <p>
                 {" "}
-                <i class="bi bi-geo-alt-fill"></i> {data.location}
+                <i className="bi bi-geo-alt-fill"></i> {data.location}
               </p>
             </div>
             <div className="flex tedxt-sm justify-between">
               <p className="mt-3 text-slate-400">
                 {" "}
-                <i class="bi bi-play-circle-fill"></i> Start Date <br />{" "}
+                <i className="bi bi-play-circle-fill"></i> Start Date <br />{" "}
                 {data.StartDate}
               </p>
 
               <p className="mt-3 text-slate-400">
                 {" "}
-                <i class="bi bi-calendar-check-fill"></i> Duration <br />
+                <i className="bi bi-calendar-check-fill"></i> Duration <br />
                 {data.Duration}
               </p>
 
               <p className="mt-3 text-slate-400">
                 {" "}
-                <i class="bi bi-cash"></i> stipend <br /> {data.stipend}
+                <i className="bi bi-cash"></i> stipend <br /> {data.stipend}
               </p>
             </div>
             <div className="flex">
               <p className="bg-green-100 rounded-md ml-4 text-green-300">
                 {" "}
-                <i class="bi bi-clock"></i> 12/12/2012
+                <i className="bi bi-clock"></i> 12/12/2012
               </p>
             </div>
             <hr />
