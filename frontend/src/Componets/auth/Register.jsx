@@ -3,6 +3,7 @@ import {
   signInWithPopup,
   createUserWithEmailAndPassword,
   signOut,
+  signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth, provider } from "../../firebase/firebase";
 import { useNavigate } from "react-router-dom";
@@ -14,6 +15,7 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isStudent, setStudent] = useState(true);
+  const [error, setError] = useState("");
   const db = getFirestore(); // Initialize Firestore
   const navigate = useNavigate();
 
@@ -66,6 +68,19 @@ const Register = () => {
     }
   };
 
+  const emailLoginFunction = () => {
+    setError(""); // Clear any previous errors
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log("Login successful", user);
+        navigate("/");
+        showModal(false);
+      })
+      .catch((error) => {
+        setError("Invalid email or password. Please try again.");
+      });
+  };
   const closeLogin = () => setShowModal(false);
 
   // Function for Email/Password Registration
@@ -89,7 +104,7 @@ const Register = () => {
         const newUserRef = doc(db, "users", user.uid);
         await setDoc(newUserRef, {
           displayName: fname,
-          notificationsEnabled:false,
+          notificationsEnabled: false,
           email: user.email,
           status: "free",
           uid: user.uid,
@@ -191,7 +206,7 @@ const Register = () => {
 
       {/* Login Modal (Only shown when email exists) */}
       {showModal && (
-        <div className="login">
+        <div className="login text-white">
           <button id="cross" onClick={closeLogin}>
             <i className="bi bi-x"></i>
           </button>
@@ -215,10 +230,34 @@ const Register = () => {
             <div className="py-6">
               <p
                 onClick={loginFunction}
-                className="flex items-center justify-center mt-4 bg-slate-500 text-white rounded-lg hover:bg-gray-400"
+                className="flex items-center justify-center mt-4 p-4 bg-slate-500 text-white rounded-lg hover:bg-gray-400"
               >
                 Sign in with Google
               </p>
+              <p className="text-center my-2">or</p>
+              <div className="email-login text-black place-content-center flex flex-col items-center">
+                <input
+                  type="email"
+                  placeholder="Enter Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="block my-2 p-2 rounded"
+                />
+                <input
+                  type="password"
+                  placeholder="Enter Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="block my-2 p-2 rounded"
+                />
+                <button
+                  onClick={emailLoginFunction}
+                  className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+                >
+                  Login with Email
+                </button>
+                {error && <p className="text-red-500 mt-2">{error}</p>}
+              </div>
             </div>
           ) : (
             <div className="py-6">

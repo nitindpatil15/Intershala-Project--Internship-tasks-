@@ -166,7 +166,7 @@ function Sidebar() {
           <>
             <div className="reg">
               <Link to="/register">
-                <button>Register</button>
+                <button>Register/Login</button>
               </Link>
             </div>
             <div>

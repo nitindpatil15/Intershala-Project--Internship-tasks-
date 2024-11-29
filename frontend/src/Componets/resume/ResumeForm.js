@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 const ResumeForm = ({ userId }) => {
+  const navigate = useNavigate()
   const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
@@ -73,6 +75,7 @@ const ResumeForm = ({ userId }) => {
       });
 
       alert("Resume generated and saved to your profile successfully!");
+      navigate('/resume')
     } catch (error) {
       console.error("Error generating resume:", error);
       alert("Failed to generate the resume. Please try again.");

@@ -2,26 +2,35 @@ import React, { useEffect, useState } from "react";
 import logo from "../../Assets/logo.png";
 import { Link } from "react-router-dom";
 import "./navbar.css";
-import { signInWithPopup, signOut } from "firebase/auth";
+import {
+  signInWithPopup,
+  signOut,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { auth, provider } from "../../firebase/firebase";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../Feature/Userslice";
 import { useNavigate } from "react-router-dom";
-// eslint-disable-next-line 
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import { collection, query, onSnapshot } from "firebase/firestore";
 
 function Navbar() {
   const navigate = useNavigate();
   const user = useSelector(selectUser);
+  // eslint-disable-next-line
   const [isDivVisibleForintern, setDivVisibleForintern] = useState(false);
+  // eslint-disable-next-line
   const [isDivVisibleForJob, setDivVisibleForJob] = useState(false);
   const [isDivVisibleForlogin, setDivVisibleForlogin] = useState(false);
-  // eslint-disable-next-line 
+  // eslint-disable-next-line
   const [isDivVisibleForProfile, setDivVisibleForProfile] = useState(false);
   const [isStudent, setStudent] = useState(true);
   const [notifications, setNotifications] = useState([]);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
   const userId = auth.currentUser?.uid;
 
   useEffect(() => {
@@ -75,6 +84,20 @@ function Navbar() {
     setDivVisibleForlogin(false);
   };
 
+  const emailLoginFunction = () => {
+    setError(""); // Clear any previous errors
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+        console.log("Login successful", user);
+        navigate("/");
+        setDivVisibleForlogin(false);
+      })
+      .catch((error) => {
+        setError("Invalid email or password. Please try again.");
+      });
+  };
+
   const showLogin = () => setDivVisibleForlogin(true);
   const closeLogin = () => setDivVisibleForlogin(false);
   const setTrueForStudent = () => setStudent(false);
@@ -98,14 +121,17 @@ function Navbar() {
             </Link>
           </div>
           <div className="elem flex items-center">
-            <Link to="/internship" className="mx-2"
+            <Link
+              to="/internship"
+              className="mx-2"
               id="int"
               onMouseEnter={() => showDropdown(setDivVisibleForintern)}
               onMouseLeave={() => hideDropdown(setDivVisibleForintern)}
             >
               Internships <i id="ico" className="bi bi-caret-down-fill"></i>
             </Link>
-            <Link to="/Jobs"
+            <Link
+              to="/Jobs"
               onMouseEnter={() => showDropdown(setDivVisibleForJob)}
               onMouseLeave={() => hideDropdown(setDivVisibleForJob)}
             >
@@ -124,12 +150,16 @@ function Navbar() {
                     <img
                       src={user?.photo}
                       alt="Profile"
-                      onMouseEnter={() => showDropdown(setDivVisibleForProfile)}
-                      className="rounded-full w-12 ml-3"
+                      className="rounded-full w-12 h-12 ml-3"
                       id="picpro"
                     />
                   </Link>
-                  <Link to={"/resume"} className="bg-black text-white p-2 mx-2 rounded-xl">Resume</Link>
+                  <Link
+                    to={"/resume"}
+                    className="bg-black text-white p-2 mx-2 rounded-xl"
+                  >
+                    Resume
+                  </Link>
                 </div>
                 <button
                   className="bt-log mx-5"
@@ -163,46 +193,15 @@ function Navbar() {
                     <Link to="/adminLogin">Admin</Link>
                   </button>
                 </div>
-                  <h1 className="text-green-700">Hire Talent</h1>
+                <h1 className="text-green-700">Hire Talent</h1>
               </div>
             )}
           </div>
         </ul>
       </nav>
 
-      {isDivVisibleForintern && (
-        <div className="profile-dropdown-2">
-          <div className="left-section">
-            <p>Top Locations</p>
-            <p>Profile</p>
-            <p>Top Category</p>
-            <p>Explore More Internships</p>
-          </div>
-          <div className="line flex bg-slate-400"></div>
-          <div className="right-section">
-            <p>Intern at India</p>
-            <p>Intern at India</p>
-          </div>
-        </div>
-      )}
-
-      {isDivVisibleForJob && (
-        <div className="profile-dropdown-1">
-          <div className="left-section">
-            <p>Top Locations</p>
-            <p>Profile</p>
-            <p>Top Category</p>
-          </div>
-          <div className="line flex bg-slate-400"></div>
-          <div className="right-section">
-            <p>Job in India</p>
-            <p>Job in India</p>
-          </div>
-        </div>
-      )}
-
       {isDivVisibleForlogin && (
-        <div className="login">
+        <div className="login text-white">
           <button id="cross" onClick={closeLogin}>
             <i className="bi bi-x"></i>
           </button>
@@ -226,10 +225,34 @@ function Navbar() {
             <div className="py-6">
               <p
                 onClick={loginFunction}
-                className="flex items-center justify-center mt-4 bg-slate-500 text-white rounded-lg hover:bg-gray-400"
+                className="flex items-center justify-center mt-4 p-4 bg-slate-500 text-white rounded-lg hover:bg-gray-400"
               >
                 Sign in with Google
               </p>
+              <p className="text-center my-2">or</p>
+              <div className="email-login text-black place-content-center flex flex-col items-center">
+                <input
+                  type="email"
+                  placeholder="Enter Email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="block my-2 p-2 rounded"
+                />
+                <input
+                  type="password"
+                  placeholder="Enter Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="block my-2 p-2 rounded"
+                />
+                <button
+                  onClick={emailLoginFunction}
+                  className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700"
+                >
+                  Login with Email
+                </button>
+                {error && <p className="text-red-500 mt-2">{error}</p>}
+              </div>
             </div>
           ) : (
             <div className="py-6">

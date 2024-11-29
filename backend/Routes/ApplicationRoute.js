@@ -89,8 +89,9 @@ router.put("/:id", async (req, res) => {
       id: u_id,
       message,
       status,
-      timestamp: new Date(),
+      applicationid:id,
       read: false,
+      timestamp: new Date(),
     };
 
     const firestore = admin.firestore();
