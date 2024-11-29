@@ -39,17 +39,6 @@ function Sidebar() {
     }
   }, [userId]);
 
-  // Function to display browser notifications
-  const showBrowserNotification = (message, status) => {
-    if (Notification.permission === "granted") {
-      const options = {
-        body: message,
-        background: status === "accepted" ? "green" : "red",
-      };
-      new Notification("Application Status Update", options);
-    }
-  };
-
   // Fetch notifications and handle sidebar behavior
   useEffect(() => {
     let unsubscribeNotifications = null;
@@ -60,16 +49,6 @@ function Sidebar() {
 
       unsubscribeNotifications = onSnapshot(q, (snapshot) => {
         const newNotifications = snapshot.docs.map((doc) => doc.data());
-
-        snapshot.docChanges().forEach((change) => {
-          if (change.type === "added") {
-            showBrowserNotification(
-              change.doc.data().message,
-              change.doc.data().status
-            );
-          }
-        });
-
         setNotifications(newNotifications);
       });
     }

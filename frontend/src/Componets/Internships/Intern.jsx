@@ -133,12 +133,12 @@ function Intern() {
         </div>
 
         <div className="all-internships">
-          <div className=" show show2 flex justify-center">
+          <div className=" show show2 flex justify-center items-center">
             <p className="filterico text-center" onClick={showDiv}>
               filter <i className="bi bi-funnel  text-blue-400"></i>{" "}
             </p>
           </div>
-          <p className="head font-bold text-lg text-center ">
+          <p className="head font-bold text-lg w-40">
             {filterInternship.length} total internships
           </p>
 

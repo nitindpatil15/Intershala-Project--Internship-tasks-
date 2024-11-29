@@ -42,10 +42,6 @@ function Navbar() {
         snapshot.docChanges().forEach((change) => {
           if (change.type === "added") {
             newNotifications.push(change.doc.data());
-            showBrowserNotification(
-              change.doc.data().message,
-              change.doc.data().status
-            );
           }
         });
         setNotifications(newNotifications);
@@ -55,15 +51,6 @@ function Navbar() {
     }
   }, [userId]);
 
-  const showBrowserNotification = (message, status) => {
-    if (Notification.permission === "granted") {
-      const options = {
-        body: message,
-        backgroundColor: status === "accepted" ? "green" : "red",
-      };
-      new Notification("Application Status Update", options);
-    }
-  };
 
   const loginFunction = () => {
     signInWithPopup(auth, provider)
